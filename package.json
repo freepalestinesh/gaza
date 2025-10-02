@@ -1,0 +1,39 @@
+{
+  "name": "gaza-platform",
+  "version": "1.0.0",
+  "description": "Gaza Platform - Full-stack donation and profile management system",
+  "private": true,
+  "workspaces": [
+    "api",
+    "ui",
+    "mcp-server"
+  ],
+  "scripts": {
+    "dev:api": "cd api && npm run dev",
+    "dev:ui": "cd ui && npm run dev",
+    "dev:mcp": "cd mcp-server && npm run dev",
+    "install:all": "npm install && npm install --workspaces",
+    "build:all": "npm run build --workspaces --if-present",
+    "test:all": "npm test --workspaces --if-present",
+    "docker:up": "docker-compose up",
+    "docker:down": "docker-compose down",
+    "docker:build": "docker-compose build",
+    "prisma:migrate": "cd api && npx prisma migrate dev",
+    "prisma:studio": "cd api && npx prisma studio",
+    "prisma:generate": "cd api && npx prisma generate"
+  },
+  "keywords": [
+    "gaza",
+    "donation",
+    "platform",
+    "fastify",
+    "nextjs",
+    "prisma"
+  ],
+  "author": "",
+  "license": "ISC",
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  }
+}
