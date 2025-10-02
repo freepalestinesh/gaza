@@ -14,4 +14,3 @@ coverage
 build
 tmp
 api/prisma/dev.db
-api/prisma/migrations

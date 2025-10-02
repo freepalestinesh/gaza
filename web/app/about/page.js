@@ -87,7 +87,7 @@ export default function About() {
           <section className="mb-12">
             <h2 className="text-2xl font-semibold mb-4">Get Involved</h2>
             <p className="text-gray-600 dark:text-gray-400 mb-4">
-              Whether you're looking for support or want to help others, we welcome you to 
+              Whether you&apos;re looking for support or want to help others, we welcome you to 
               join our community.
             </p>
             <div className="flex space-x-4">

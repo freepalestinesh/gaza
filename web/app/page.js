@@ -87,7 +87,7 @@ export default function Home() {
             <div className="text-4xl mb-4">🌍</div>
             <h3 className="text-xl font-semibold mb-2">Impact</h3>
             <p className="text-gray-600 dark:text-gray-400">
-              Make a real difference in people's lives
+              Make a real difference in people&apos;s lives
             </p>
           </div>
         </div>

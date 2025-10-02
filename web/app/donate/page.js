@@ -35,7 +35,7 @@ export default function Donate() {
           <div className="text-6xl mb-6">💚</div>
           <h2 className="text-2xl font-semibold mb-4">Donation System Coming Soon</h2>
           <p className="text-gray-600 dark:text-gray-400 mb-6">
-            We're working on implementing a secure donation system. Check back soon!
+            We&apos;re working on implementing a secure donation system. Check back soon!
           </p>
           <div className="space-y-4 text-left max-w-2xl mx-auto">
             <h3 className="font-semibold">Planned Features:</h3>
