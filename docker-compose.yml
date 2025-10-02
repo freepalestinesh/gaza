@@ -1,0 +1,91 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:14-alpine
+    container_name: gaza-postgres
+    environment:
+      POSTGRES_USER: gaza
+      POSTGRES_PASSWORD: gaza_password
+      POSTGRES_DB: gaza_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U gaza"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: gaza-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    container_name: gaza-api
+    environment:
+      DATABASE_URL: postgresql://gaza:gaza_password@postgres:5432/gaza_db
+      REDIS_URL: redis://redis:6379
+      API_PORT: 3001
+      NODE_ENV: development
+    ports:
+      - "3001:3001"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./api:/app
+      - /app/node_modules
+    command: npm run dev
+
+  ui:
+    build:
+      context: ./ui
+      dockerfile: Dockerfile
+    container_name: gaza-ui
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:3001
+      NEXT_PUBLIC_APP_URL: http://localhost:3000
+    ports:
+      - "3000:3000"
+    depends_on:
+      - api
+    volumes:
+      - ./ui:/app
+      - /app/node_modules
+      - /app/.next
+    command: npm run dev
+
+  mcp-server:
+    build:
+      context: ./mcp-server
+      dockerfile: Dockerfile
+    container_name: gaza-mcp-server
+    environment:
+      MCP_SERVER_PORT: 3002
+      NODE_ENV: development
+    ports:
+      - "3002:3002"
+    volumes:
+      - ./mcp-server:/app
+      - /app/node_modules
+    command: npm run dev
+
+volumes:
+  postgres_data:
+  redis_data:

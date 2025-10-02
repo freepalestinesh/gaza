@@ -1,0 +1,27 @@
+{
+  "name": "gaza-mcp-server",
+  "version": "1.0.0",
+  "description": "Gaza Platform MCP Identity Server",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "node --watch src/index.js",
+    "start": "node src/index.js",
+    "test": "node --test"
+  },
+  "keywords": [
+    "mcp",
+    "identity",
+    "oauth2",
+    "openid"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "fastify": "^4.25.2",
+    "@fastify/jwt": "^8.0.0",
+    "@fastify/oauth2": "^7.7.0",
+    "dotenv": "^16.4.1",
+    "jsonwebtoken": "^9.0.2"
+  }
+}

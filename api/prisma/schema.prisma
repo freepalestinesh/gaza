@@ -1,0 +1,152 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  USER
+  ADMIN
+}
+
+enum VerificationStatus {
+  PENDING
+  VERIFIED
+  REJECTED
+}
+
+enum DonationStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  REFUNDED
+}
+
+model User {
+  id                String             @id @default(cuid())
+  email             String             @unique
+  password          String
+  role              UserRole           @default(USER)
+  emailVerified     Boolean            @default(false)
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  
+  profile           Profile?
+  donations         Donation[]
+  verificationRequests VerificationRequest[]
+  
+  @@index([email])
+}
+
+model Profile {
+  id                String             @id @default(cuid())
+  userId            String             @unique
+  user              User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  firstName         String
+  lastName          String
+  phoneNumber       String?
+  address           String?
+  city              String?
+  country           String?
+  postalCode        String?
+  avatarUrl         String?
+  bio               String?
+  
+  verificationStatus VerificationStatus @default(PENDING)
+  verifiedAt        DateTime?
+  
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  
+  @@index([userId])
+}
+
+model Donation {
+  id                String             @id @default(cuid())
+  userId            String
+  user              User               @relation(fields: [userId], references: [id])
+  
+  amount            Decimal            @db.Decimal(10, 2)
+  currency          String             @default("USD")
+  status            DonationStatus     @default(PENDING)
+  
+  paymentProvider   String
+  paymentId         String?
+  paymentIntent     String?
+  
+  campaignId        String?
+  campaign          Campaign?          @relation(fields: [campaignId], references: [id])
+  
+  message           String?
+  anonymous         Boolean            @default(false)
+  
+  receiptUrl        String?
+  
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  
+  @@index([userId])
+  @@index([campaignId])
+  @@index([status])
+}
+
+model Campaign {
+  id                String             @id @default(cuid())
+  title             String
+  description       String
+  goal              Decimal            @db.Decimal(10, 2)
+  raised            Decimal            @db.Decimal(10, 2) @default(0)
+  currency          String             @default("USD")
+  
+  imageUrl          String?
+  
+  active            Boolean            @default(true)
+  startDate         DateTime           @default(now())
+  endDate           DateTime?
+  
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  
+  donations         Donation[]
+  
+  @@index([active])
+}
+
+model VerificationRequest {
+  id                String             @id @default(cuid())
+  userId            String
+  user              User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  documentType      String
+  documentUrl       String
+  
+  status            VerificationStatus @default(PENDING)
+  reviewedBy        String?
+  reviewedAt        DateTime?
+  reviewNotes       String?
+  
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  
+  @@index([userId])
+  @@index([status])
+}
+
+model RefreshToken {
+  id                String             @id @default(cuid())
+  token             String             @unique
+  userId            String
+  expiresAt         DateTime
+  
+  createdAt         DateTime           @default(now())
+  
+  @@index([token])
+  @@index([userId])
+}
